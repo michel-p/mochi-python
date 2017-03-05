@@ -2,6 +2,8 @@
 
 import RPi.GPIO as GPIO
 import time
+import MySQLdb
+import cgi
 
 
 MEAL_SERVO_CONTROL = 14
@@ -22,10 +24,11 @@ FULL_SPEED_BACKWARD_DC = ( 1 / 20 ) * 10
 
 try: 
     GPIO.setmode(GPIO.BCM)
+    #GPIO.setwarning(False)
     GPIO.setup(MEAL_SERVO_CONTROL, GPIO.OUT)
-
+  
     pwm = GPIO.PWM(MEAL_SERVO_CONTROL, SERVO_FREQUENCY)
-
+ 
     # Start the SERVO moving forward
     pwm.start(10)
 
@@ -35,10 +38,19 @@ try:
     # And now 1/4 roration backward
     pwm.start(5)
     time.sleep(0.25)
-        
+
     # Clean everything
     pwm.stop()
     GPIO.cleanup()
+  
+    # Register meal in DB
+    form = cgi.FieldStorage()
+    db = MySQLdb.connect("localhost", "mochi", "M0ch1Datab4se", "mochi")
+    username = "Raspberry Pi" if "username" not in form else  form["username"].value
+    with db:
+        curs=db.cursor() 
+        curs.execute ("""INSERT INTO meals(feeder, date) values(%s, NOW());""", username)
+    
     result = 'true'
 except:
     result = 'false'

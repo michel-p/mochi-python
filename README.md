@@ -4,6 +4,7 @@
 
 - Automaticcaly called by crontab eachday at 9am and 6pm to feed Mochi's
 - Called from anywhere on earth by Mochi's carers
+- Register meal in Database
 
 ## Turn the lights on/off (toggle_light.py)
 
