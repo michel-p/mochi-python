@@ -15,7 +15,7 @@ with db:
     curs=db.cursor()
     curs.execute ("SELECT * FROM user WHERE username='"+username+"' AND password='"+password+"' ORDER BY id DESC")
     userAuth = curs.fetchall()
-    print "Status: 200 OK"
+    print "Status: 200 OK" if len(userAuth) > 0 else "Status: 400 Bad Request"
     print "Content-Type: application/json"
     print ""
     print json.dumps(len(userAuth) > 0)
